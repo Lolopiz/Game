@@ -1,28 +1,38 @@
 import pygame
-pygame.init
+import sys
+from menu_start import afficher_menu_start
+from utils import gestion_hover
 
-#Génerer la premeire fenetre
-pygame.display.set_caption('Jeu de test')
-screen = pygame.display.set_mode((1080 , 700))
+pygame.init()
 
+# Définir la nouvelle taille souhaitée
+nouvelle_largeur = 1200  # Remplacez par la largeur souhaitée
+nouvelle_hauteur = 800  # Remplacez par la hauteur souhaitée
 
-#background menu start
-menu_start = pygame.image.load('asset\menu_start.jpg')
+# Générer la première fenêtre avec les dimensions redimensionnées
+screen = pygame.display.set_mode((nouvelle_largeur, nouvelle_hauteur))
+pygame.display.set_caption("Jeu de test")
+
 running = True
 
+while running:
+	for event in pygame.event.get():
+		if event.type == pygame.QUIT:
+			running = False
+			pygame.quit()
+			sys.exit()
 
-#Boucle du jeu
-while running :
+	   # Vérifier les événements clavier
+		if event.type == pygame.KEYDOWN:
+			# Vérifier si la touche CTRL est enfoncée
+			if event.mod & pygame.KMOD_CTRL:
+				# Vérifier si la touche W (minuscule ou majuscule) est enfoncée
+				if event.key == pygame.K_w or event.key == pygame.K_W:
+					running = False
+					pygame.quit()
+					sys.exit()
 
-    #apppliquer l'arrrier plan
-    screen.blit(menu_start, (0,0))
+	# Afficher le menu de démarrage
+	afficher_menu_start(screen)
 
-    #mettre a jour la fenetre
-    pygame.display.flip()
-    
-    #condition de sortie (joueur ferme la fenetre)
-    for event in pygame.event.get():
-        #évènement = fermeture de fenetre
-        if event.type == pygame.QUIT:
-            running = False
-            pygame.quit()
+	pygame.display.flip()
