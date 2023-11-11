@@ -1,5 +1,6 @@
 import pygame
 import sys
+from bulle_dialog import afficher_bulle_dialogue
 
 def afficher_menu_start(screen):
     blanc = (255, 255, 255)
@@ -10,26 +11,20 @@ def afficher_menu_start(screen):
     font_hover = pygame.font.Font(None, font_size)
 
     texte_start = font.render("Start", True, blanc)
+    texte_start_rect = texte_start.get_rect(midtop=(screen.get_width() // 2, 300))
+
     texte_parametre = font.render("Parametre", True, blanc)
+    texte_parametre_rect = texte_parametre.get_rect(midtop=(screen.get_width() // 2, 400))
+
     texte_credit = font.render("Credit", True, blanc)
-
-    texte_start_rect = texte_start.get_rect()
-    texte_parametre_rect = texte_parametre.get_rect()
-    texte_credit_rect = texte_credit.get_rect()
-
-    texte_start_rect.midtop = (screen.get_width() // 2, screen.get_height() // 2)
-    texte_parametre_rect.midtop = (
-        screen.get_width() // 2,
-        texte_start_rect.bottom + 20,
-    )
-    texte_credit_rect.midtop = (
-        screen.get_width() // 2,
-        texte_parametre_rect.bottom + 20,
-    )
+    texte_credit_rect = texte_credit.get_rect(midtop=(screen.get_width() // 2, 500))
 
     game_name_image = pygame.image.load('asset/game_name.png')
-    game_name_rect = game_name_image.get_rect()
-    game_name_rect.midtop = (screen.get_width() // 2, 10)
+    game_name_rect = game_name_image.get_rect(midtop=(screen.get_width() // 2, 10))
+    
+    hover_start = False
+    hover_parametre = False
+    hover_credit = False
 
     while True:
         for event in pygame.event.get():
@@ -64,6 +59,7 @@ def afficher_menu_start(screen):
                 # Afficher un message différent pour chaque texte
                 if hover_start:
                     print("Start cliqué!")
+                    afficher_page_bulles(screen)
                 elif hover_parametre:
                     print("Parametre cliqué!")
                 elif hover_credit:
@@ -120,9 +116,38 @@ def afficher_menu_start(screen):
 
         # Mettre à jour la fenêtre
         pygame.display.flip()
+        
 
-# Exemple d'utilisation
-pygame.init()
-screen = pygame.display.set_mode((800, 600))
-pygame.display.set_caption('Menu Start')
-afficher_menu_start(screen)
+          
+# Fonction pour afficher une page avec des bulles de dialogue
+def afficher_page_bulles(screen):
+    messages = ["Hello!", "How are you?", "This is another message.", "Goodbye!"]
+    current_message_index = 0
+
+    # Définissez le rectangle du bouton ici
+    button_rect = pygame.Rect(screen.get_width() - 100, screen.get_height() - 50, 80, 40)
+    rayon_corners = 10
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if button_rect.collidepoint(event.pos):
+                    if current_message_index < len(messages):
+                        afficher_bulle_dialogue(messages[current_message_index], screen)
+                        current_message_index += 1
+
+        # Remplacez le contenu de la boucle par le remplissage de l'écran avec une couleur noire
+        screen.fill((0, 0, 0))
+
+        pygame.draw.rect(screen, (255, 0, 0), button_rect, 2)
+        pygame.display.flip()
+
+    pygame.quit()
+
+if __name__ == "__main__":
+    pygame.init()
+    screen = pygame.display.set_mode((800, 600))
+    pygame.display.set_caption('Menu Start')
+    afficher_menu_start(screen)
